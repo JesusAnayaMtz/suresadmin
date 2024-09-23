@@ -110,6 +110,14 @@ public class ClienteService {
         clienteRepository.deleteById(id);
     }
 
+    //Metodo para buscar por nombre o rfc a un cliente
+    public List<ClienteDTO> buscarPorNombreOrRfc(String searchTerm){
+        List<Cliente> clientes = clienteRepository.findByNombreOrRfc(searchTerm);
+        return clientes.stream()
+                .map(clienteMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
     // Validar la lógica condicional de manejo de crédito
     private void validarClienteDTO(ClienteDTO clienteDTO) {
         if (!clienteDTO.getManejoCredito()) {

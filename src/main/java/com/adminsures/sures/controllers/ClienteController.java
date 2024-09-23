@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
@@ -33,6 +34,12 @@ public class ClienteController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/buscar")
+    public ResponseEntity<List<ClienteDTO>> buscarClientes(@RequestParam("q") String searchTerm){
+        List<ClienteDTO> clientes = clienteService.buscarPorNombreOrRfc(searchTerm);
+        return ResponseEntity.ok(clientes);
     }
 
     @PostMapping
