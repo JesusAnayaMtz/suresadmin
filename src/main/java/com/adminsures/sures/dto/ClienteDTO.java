@@ -66,4 +66,6 @@ public class ClienteDTO {
     private Integer diasCredito;
     private LocalDate fechaCreacion;
     private LocalDate fechaActualizacion;
+
+    private Boolean activo = true;
 }

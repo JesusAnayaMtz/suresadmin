@@ -58,9 +58,19 @@ public class ClienteController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/desactivar/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id){
         clienteService.deleteCliente(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/activar/{id}")
+    public ResponseEntity<Cliente> activarCliente(@PathVariable Long id) {
+        try {
+            Cliente clienteActivado = clienteService.activarCliente(id);
+            return ResponseEntity.ok(clienteActivado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(404).body(null);  // Cliente no encontrado o ya está activo
+        }
     }
 }

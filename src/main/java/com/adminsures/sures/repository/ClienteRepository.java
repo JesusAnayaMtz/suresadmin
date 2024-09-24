@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
@@ -22,4 +23,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     @Query("SELECT c FROM Cliente c WHERE LOWER(c.nombre) LIKE LOWER(CONCAT('%', :searchTerm, '%')) " +
             " OR LOWER(c.rfc) LIKE LOWER(CONCAT('%', :searchTerm, '%')) AND c.activo = true")
     List<Cliente> findByNombreOrRfc(@Param("searchTerm") String searchTerm);
+
+    //Metodo para activar un cliente
+    Optional<Cliente> findByIdAndActivoFalse(Long id);
 }

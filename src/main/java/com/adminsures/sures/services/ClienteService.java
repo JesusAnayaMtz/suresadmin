@@ -8,6 +8,7 @@ import com.adminsures.sures.repository.ClienteRepository;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -100,14 +101,27 @@ public class ClienteService {
     public void deleteCliente(Long id){
         Optional<Cliente> clienteOpt = clienteRepository.findById(id);
         if(clienteOpt.isPresent()){
-            Cliente cliente = clienteOpt.get();
+            Cliente cliente = new Cliente();
+            cliente = clienteOpt.get();
             cliente.setActivo(false);
             clienteRepository.save(cliente);
         } else {
             throw new ValidationException("El cliente con ID " + id + " no fue encontrado");
         }
+    }
 
-        clienteRepository.deleteById(id);
+    //Metodo para activar un cliente eliminado/desactivado
+    @Transactional
+    public Cliente activarCliente(Long id) {
+        Optional<Cliente> clienteOpt = clienteRepository.findByIdAndActivoFalse(id);
+
+        if (clienteOpt.isPresent()) {
+            Cliente cliente = clienteOpt.get();
+            cliente.setActivo(true);  // Activar cliente
+            return clienteRepository.save(cliente);  // Guardar cliente activado
+        } else {
+            throw new RuntimeException("Cliente no encontrado o ya está activo");
+        }
     }
 
     //Metodo para buscar por nombre o rfc a un cliente
