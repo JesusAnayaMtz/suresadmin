@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
 
     //Metodos para buscar un producto por el nombre
-    Optional<Producto> findByNombre(String nombre);
+    Optional<Producto> findByClaveInterna(String claveInterna);
 
     //Metodo para buscar un producto por su codigo de barras
     Optional<Producto> findByCodigoBarras(String codigoBarras);
@@ -19,5 +19,5 @@ public interface ProductoRepository extends JpaRepository<Producto, Long> {
 //    boolean existByCodigoBarras(String codigoBarras);
 
     // Método para buscar productos que coincidan parcialmente con el nombre o el código de barras (case-insensitive)
-    List<Producto> findByNombreContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(String nombre, String codigoBarras);
+    List<Producto> findByClaveInternaContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(String claveInterna, String codigoBarras);
 }

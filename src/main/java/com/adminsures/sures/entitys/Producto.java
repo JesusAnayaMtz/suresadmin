@@ -1,11 +1,14 @@
 package com.adminsures.sures.entitys;
 
+import com.adminsures.sures.enums.Categoria;
+import com.adminsures.sures.enums.TipoIva;
 import com.adminsures.sures.enums.UnidadVenta;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.security.PrivilegedAction;
 import java.time.LocalDate;
 
 @Data
@@ -18,18 +21,25 @@ public class Producto {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String nombre;
+    private String claveInterna;
 
     @Column(unique = true, nullable = false)
     private String codigoBarras;
 
     private String descripcion;
 
+    private Integer claveSat;
+
     private String rutaImagen;
+
+    private TipoIva tipoIva;
 
     private Double precio;
     private Double costo;
     private Double utilidad;
+
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
 
     @Enumerated(EnumType.STRING)
     private UnidadVenta unidadVenta;
@@ -47,5 +57,16 @@ public class Producto {
 
     @UpdateTimestamp
     private LocalDate fechaActualizacion;
+
+//    public Double calculaIva(){
+//        tipoIva = this.tipoIva;
+//
+//        if (tipoIva == TipoIva.GRAVADO){
+//            precioIva = (precio * 0.16) + precio;
+//        } else if (tipoIva == TipoIva.EXENTO) {
+//            precioIva = precio;
+//        }
+//        return precioIva;
+//    }
 }
 

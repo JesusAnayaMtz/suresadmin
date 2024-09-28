@@ -5,6 +5,7 @@ import com.adminsures.sures.entitys.Producto;
 import com.adminsures.sures.mapper.ProductoMapper;
 import com.adminsures.sures.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -37,16 +38,24 @@ public class ProductoService {
         return productoMapper.toDTO(producto);
     }
 
-    public ProductoDTO crearProducto(ProductoDTO productoDTO, MultipartFile imagen) throws Exception {
+    public ProductoDTO crearProductoSinImagen(ProductoDTO productoDTO) throws Exception {
         validarProducto(productoDTO);
 
         Producto producto = productoMapper.toEntity(productoDTO);
 
-        //Calcular Utilidad
+        // Calcular Utilidad
         producto.setUtilidad(calcularUtilidad(producto.getCosto(), producto.getPrecio()));
 
-        //Guardar Imagen
-        if (imagen !=null && !imagen.isEmpty()){
+        // Guardar producto sin imagen
+        producto = productoRepository.save(producto);
+        return productoMapper.toDTO(producto);
+    }
+
+    public ProductoDTO subirImagenProducto(Long id, MultipartFile imagen) throws Exception {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new Exception("Producto no encontrado"));
+
+        if (imagen != null && !imagen.isEmpty()) {
             String rutaImagen = guardarImagen(imagen);
             producto.setRutaImagen(rutaImagen);
         }
@@ -56,16 +65,18 @@ public class ProductoService {
     }
 
     public ProductoDTO actualizarProducto(Long id, ProductoDTO productoDTO, MultipartFile imagen) throws Exception {
-        Producto productoExistente = productoRepository.findById(id).orElseThrow(() -> new Exception("Productso no econtrado"));
+        Producto productoExistente = productoRepository.findById(id).orElseThrow(() -> new Exception("Producto no encontrado"));
 
         validarProducto(productoDTO);
 
-        productoExistente.setNombre(productoDTO.getNombre());
+        productoExistente.setClaveInterna(productoDTO.getClaveInterna());
         productoExistente.setCodigoBarras(productoDTO.getCodigoBarras());
         productoExistente.setDescripcion(productoDTO.getDescripcion());
+        productoExistente.setClaveSat(productoDTO.getClaveSat());
         productoExistente.setPrecio(productoDTO.getCosto());
         productoExistente.setCosto(productoDTO.getCosto());
         productoExistente.setUnidadVenta(productoDTO.getUnidadVenta());
+        productoExistente.setCategoria(productoDTO.getCategoria());
         productoExistente.setExistencia(productoDTO.getExistencia());
         productoExistente.setExistenciaMinima(productoDTO.getExistenciaMinima());
         productoExistente.setFechaActualizacion(LocalDate.now());
@@ -91,7 +102,7 @@ public class ProductoService {
 
     // Método para obtener productos por nombre o código de barras
     public List<ProductoDTO> buscarPorNombreOCodigoBarras(String searchTerm) {
-        List<Producto> productos = productoRepository.findByNombreContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(searchTerm, searchTerm);
+        List<Producto> productos = productoRepository.findByClaveInternaContainingIgnoreCaseOrCodigoBarrasContainingIgnoreCase(searchTerm, searchTerm);
         return productos.stream()
                 .map(productoMapper::toDTO)
                 .toList();
@@ -112,7 +123,7 @@ public class ProductoService {
     }
 
     private void validarProducto(ProductoDTO productoDTO) throws Exception {
-        Optional<Producto> productoExistenteNombre = productoRepository.findByNombre(productoDTO.getNombre());
+        Optional<Producto> productoExistenteNombre = productoRepository.findByClaveInterna(productoDTO.getClaveInterna());
         if (productoExistenteNombre.isPresent()) {
             throw new Exception("Ya existe un producto con ese nombre.");
         }
