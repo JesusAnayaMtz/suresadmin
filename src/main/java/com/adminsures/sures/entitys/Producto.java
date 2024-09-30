@@ -32,6 +32,7 @@ public class Producto {
 
     private String rutaImagen;
 
+    @Enumerated(EnumType.STRING)
     private TipoIva tipoIva;
 
     private Double precio;

@@ -42,6 +42,7 @@ public class ProductoDTO {
 
     private Double utilidad;  // Campo para utilidad calculada automáticamente
 
+
     private UnidadVenta unidadVenta;  // Campo para la unidad de venta
 
 

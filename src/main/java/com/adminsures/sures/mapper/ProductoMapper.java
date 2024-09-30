@@ -14,6 +14,7 @@ public class ProductoMapper {
         dto.setCodigoBarras(producto.getCodigoBarras());
         dto.setDescripcion(producto.getDescripcion());
         dto.setClaveSat(producto.getClaveSat());
+        dto.setTipoIva(producto.getTipoIva());
         dto.setPrecio(producto.getPrecio());
         dto.setCosto(producto.getCosto());
         dto.setUtilidad(producto.getUtilidad());
@@ -33,6 +34,7 @@ public class ProductoMapper {
         producto.setCodigoBarras(dto.getCodigoBarras());
         producto.setDescripcion(dto.getDescripcion());
         producto.setClaveSat(dto.getClaveSat());
+        producto.setTipoIva(dto.getTipoIva());
         producto.setPrecio(dto.getPrecio());
         producto.setCosto(dto.getCosto());
         producto.setUnidadVenta(dto.getUnidadVenta());
