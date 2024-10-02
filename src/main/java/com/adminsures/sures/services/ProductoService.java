@@ -5,10 +5,12 @@ import com.adminsures.sures.entitys.Producto;
 import com.adminsures.sures.mapper.ProductoMapper;
 import com.adminsures.sures.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +21,7 @@ import java.util.Optional;
 @Service
 public class ProductoService {
 
-    private static final String UPLOAD_DIRECTORY = "C:/GitHub/suresadmin/images";
+    private static final String UPLOAD_DIRECTORY = "images/";
 
     @Autowired
     private ProductoRepository productoRepository;
@@ -64,16 +66,26 @@ public class ProductoService {
         return productoMapper.toDTO(producto);
     }
 
-    public ProductoDTO actualizarProducto(Long id, ProductoDTO productoDTO, MultipartFile imagen) throws Exception {
+    public Resource obtenerImagen(String nombreImagen) throws Exception {
+        Path imagePath = Paths.get(UPLOAD_DIRECTORY).resolve(nombreImagen);
+
+        if (!Files.exists(imagePath)) {
+            throw new FileNotFoundException("La imagen no se encuentra en el servidor");
+        }
+
+        return new UrlResource(imagePath.toUri());
+    }
+
+    public ProductoDTO actualizarProducto(Long id, ProductoDTO productoDTO) throws Exception {
         Producto productoExistente = productoRepository.findById(id).orElseThrow(() -> new Exception("Producto no encontrado"));
 
-        validarProducto(productoDTO);
+        validarProductoActualizado(productoDTO, productoExistente);
 
         productoExistente.setClaveInterna(productoDTO.getClaveInterna());
         productoExistente.setCodigoBarras(productoDTO.getCodigoBarras());
         productoExistente.setDescripcion(productoDTO.getDescripcion());
         productoExistente.setClaveSat(productoDTO.getClaveSat());
-        productoExistente.setPrecio(productoDTO.getCosto());
+        productoExistente.setPrecio(productoDTO.getPrecio());
         productoExistente.setCosto(productoDTO.getCosto());
         productoExistente.setUnidadVenta(productoDTO.getUnidadVenta());
         productoExistente.setCategoria(productoDTO.getCategoria());
@@ -84,17 +96,11 @@ public class ProductoService {
         //Recalcular la en caso de que cambie el precio o el costo
         productoExistente.setUtilidad(calcularUtilidad(productoExistente.getCosto(), productoExistente.getPrecio()));
 
-        //Si hay una nueva imagen guardarla
-        if (imagen != null && imagen.isEmpty()){
-            String rutaImagen = guardarImagen(imagen);
-            productoExistente.setRutaImagen(rutaImagen);
-        }
-
         productoExistente = productoRepository.save(productoExistente);
         return productoMapper.toDTO(productoExistente);
     }
 
-    public void desactvarProducto(Long id) throws Exception {
+    public void desactivarProducto(Long id) throws Exception {
         Producto producto = productoRepository.findById(id).orElseThrow(() -> new Exception("Producto no encontrado"));
         producto.setActivo(false);
         productoRepository.save(producto);
@@ -109,10 +115,18 @@ public class ProductoService {
     }
 
     public String guardarImagen(MultipartFile imagen) throws Exception {
+        Path directoryPath = Paths.get(UPLOAD_DIRECTORY);
+
+        // Crear el directorio si no existe
+        if (!Files.exists(directoryPath)) {
+            Files.createDirectories(directoryPath);
+        }
+
         byte[] bytes = imagen.getBytes();
-        Path path = Paths.get(UPLOAD_DIRECTORY + "/" + imagen.getOriginalFilename());
-        Files.write(path, bytes);
-        return path.toString();
+        Path imagePath = directoryPath.resolve(imagen.getOriginalFilename());
+        Files.write(imagePath, bytes);
+
+        return imagePath.toString();
     }
 
     private Double calcularUtilidad(Double costo, Double precio) {
@@ -123,14 +137,32 @@ public class ProductoService {
     }
 
     private void validarProducto(ProductoDTO productoDTO) throws Exception {
-        Optional<Producto> productoExistenteNombre = productoRepository.findByClaveInterna(productoDTO.getClaveInterna());
-        if (productoExistenteNombre.isPresent()) {
-            throw new Exception("Ya existe un producto con ese nombre.");
+        Optional<Producto> productoExistenteClaveInterna = productoRepository.findByClaveInterna(productoDTO.getClaveInterna());
+        if (productoExistenteClaveInterna.isPresent()) {
+            throw new Exception("Ya existe un producto con ese clave Interna.");
         }
 
         Optional<Producto> productoExistenteCodigoBarras = productoRepository.findByCodigoBarras(productoDTO.getCodigoBarras());
         if (productoExistenteCodigoBarras.isPresent()) {
             throw new Exception("Ya existe un producto con ese código de barras.");
+        }
+    }
+
+    private void validarProductoActualizado(ProductoDTO productoDTO, Producto productoExistente) throws Exception {
+        // Validar solo si la clave interna ha cambiado
+        if (!productoExistente.getClaveInterna().equals(productoDTO.getClaveInterna())) {
+            Optional<Producto> productoExistenteClaveInterna = productoRepository.findByClaveInterna(productoDTO.getClaveInterna());
+            if (productoExistenteClaveInterna.isPresent()) {
+                throw new Exception("Ya existe un producto con esa clave interna.");
+            }
+        }
+
+        // Validar solo si el código de barras ha cambiado
+        if (!productoExistente.getCodigoBarras().equals(productoDTO.getCodigoBarras())) {
+            Optional<Producto> productoExistenteCodigoBarras = productoRepository.findByCodigoBarras(productoDTO.getCodigoBarras());
+            if (productoExistenteCodigoBarras.isPresent()) {
+                throw new Exception("Ya existe un producto con ese código de barras.");
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ package com.adminsures.sures.controllers;
 import com.adminsures.sures.dto.ProductoDTO;
 import com.adminsures.sures.services.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,15 +51,27 @@ public class ProductoController {
         return ResponseEntity.ok(productoActualizado);
     }
 
+    @GetMapping("/images/{nombreImagen}")
+    public ResponseEntity<Resource> obtenerImagenProducto(@PathVariable String nombreImagen) {
+        try {
+            Resource imagen = productoService.obtenerImagen(nombreImagen);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG) // Ajusta el tipo según corresponda (IMAGE_PNG, etc.)
+                    .body(imagen);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<ProductoDTO> actualizarProducto(@PathVariable Long id, @RequestPart("producto") ProductoDTO productoDTO, @RequestPart("imagen") MultipartFile imagen) throws Exception {
-        ProductoDTO productoActualizado = productoService.actualizarProducto(id, productoDTO, imagen);
+    public ResponseEntity<ProductoDTO> actualizarProducto(@PathVariable Long id,@RequestBody ProductoDTO productoDTO) throws Exception {
+        ProductoDTO productoActualizado = productoService.actualizarProducto(id, productoDTO);
         return ResponseEntity.ok(productoActualizado);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> desactivarProducto(@PathVariable Long id) throws Exception {
-        productoService.desactvarProducto(id);
+        productoService.desactivarProducto(id);
         return ResponseEntity.noContent().build();
     }
 }
