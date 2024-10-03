@@ -62,7 +62,6 @@ public class ClienteService {
 
             Cliente cliente = clienteOpt.get();
 
-            //Verificar si el rfc ya existe y si pertenece a otro cliente
             // Verificar si el RFC ya existe y si pertenece a otro cliente
             if (clienteRepository.existsByRfcAndIdNot(clienteDTO.getRfc(), id)) {
                 throw new EntidadYaExisteException("El cliente con RFC " + clienteDTO.getRfc() + " ya existe.");

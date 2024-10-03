@@ -24,6 +24,11 @@ public class ProductoController {
         return productoService.obtenerTodos();
     }
 
+    @GetMapping("/activos")
+    public List<ProductoDTO> obtenerTodosProductosActivos(){
+        return productoService.obtenerProductosActivos();
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductoDTO> obtenerProductoPorId(@PathVariable Long id) throws Exception {
         ProductoDTO producto = productoService.obtenerProductoPorId(id);
@@ -69,7 +74,7 @@ public class ProductoController {
         return ResponseEntity.ok(productoActualizado);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/desactivar/{id}")
     public ResponseEntity<Void> desactivarProducto(@PathVariable Long id) throws Exception {
         productoService.desactivarProducto(id);
         return ResponseEntity.noContent().build();

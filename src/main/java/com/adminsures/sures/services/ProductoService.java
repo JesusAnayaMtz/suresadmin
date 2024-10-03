@@ -1,6 +1,8 @@
 package com.adminsures.sures.services;
 
+import com.adminsures.sures.dto.ClienteDTO;
 import com.adminsures.sures.dto.ProductoDTO;
+import com.adminsures.sures.entitys.Cliente;
 import com.adminsures.sures.entitys.Producto;
 import com.adminsures.sures.mapper.ProductoMapper;
 import com.adminsures.sures.repository.ProductoRepository;
@@ -17,6 +19,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductoService {
@@ -32,6 +35,15 @@ public class ProductoService {
     public List<ProductoDTO> obtenerTodos(){
         List<Producto> productos = productoRepository.findAll();
         return productos.stream().map(productoMapper::toDTO).toList();
+    }
+
+    //Metodo para obtener los clientes;
+    public List<ProductoDTO> obtenerProductosActivos(){
+        List<Producto> productos = productoRepository.findByActivoTrue();
+        return productos.stream()
+                .map(productoMapper::toDTO)
+                .collect(Collectors.toList());
+
     }
 
     public ProductoDTO obtenerProductoPorId(Long id) throws Exception {
