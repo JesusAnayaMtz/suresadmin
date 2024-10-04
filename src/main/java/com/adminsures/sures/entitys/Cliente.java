@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -66,6 +67,9 @@ public class Cliente {
     private BigDecimal limiteCredito;
 
     private Integer diasCredito;
+
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Cotizacion> cotizaciones;
 
     private Boolean activo = true;
 

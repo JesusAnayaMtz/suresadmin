@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.security.PrivilegedAction;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -48,6 +49,7 @@ public class Producto {
     private Integer existencia;
 
     private Integer existenciaMinima;
+
 
     @Column(nullable = false)
     private Boolean activo = true;
