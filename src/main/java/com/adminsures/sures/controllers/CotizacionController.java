@@ -2,7 +2,6 @@ package com.adminsures.sures.controllers;
 
 import com.adminsures.sures.dto.CotizacionDTO;
 import com.adminsures.sures.services.CotizacionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,32 +11,35 @@ import java.util.List;
 @RequestMapping("/api/cotizaciones")
 public class CotizacionController {
 
-    @Autowired
-    private CotizacionService cotizacionService;
+    private final CotizacionService cotizacionService;
+
+    public CotizacionController(CotizacionService cotizacionService) {
+        this.cotizacionService = cotizacionService;
+    }
 
     @GetMapping
-    public List<CotizacionDTO> obtenerCotizaciones(){
-        return cotizacionService.obtenerTodasLasCotizaciones();
+    public ResponseEntity<List<CotizacionDTO>> obtenerTodas() {
+        return ResponseEntity.ok(cotizacionService.obtenerTodas());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CotizacionDTO> obtenerCotizacion(@PathVariable Long id) throws Exception {
-        CotizacionDTO cotizacionDTO = cotizacionService.obtenerCotizacion(id);
-        return ResponseEntity.ok(cotizacionDTO);
+    public ResponseEntity<CotizacionDTO> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(cotizacionService.obtenerPorId(id));
     }
 
     @PostMapping
-    public CotizacionDTO crearCotizacion(@RequestBody CotizacionDTO cotizacionDTO) throws Exception {
-        return cotizacionService.crearCotizacion(cotizacionDTO);
+    public ResponseEntity<CotizacionDTO> crearCotizacion(@RequestBody CotizacionDTO cotizacionDTO) {
+        return ResponseEntity.ok(cotizacionService.crearCotizacion(cotizacionDTO));
     }
 
     @PutMapping("/{id}")
-    public CotizacionDTO actualizarCotizacion(@PathVariable Long id, @RequestBody CotizacionDTO cotizacionDTO) throws Exception {
-        return cotizacionService.actualizarCotizacion(id, cotizacionDTO);
+    public ResponseEntity<CotizacionDTO> actualizarCotizacion(@PathVariable Long id, @RequestBody CotizacionDTO cotizacionDTO) {
+        return ResponseEntity.ok(cotizacionService.actualizarCotizacion(id, cotizacionDTO));
     }
 
     @DeleteMapping("/{id}")
-    public void eliminarCotizacion(@PathVariable Long id){
+    public ResponseEntity<Void> eliminarCotizacion(@PathVariable Long id) {
         cotizacionService.eliminarCotizacion(id);
+        return ResponseEntity.noContent().build();
     }
 }

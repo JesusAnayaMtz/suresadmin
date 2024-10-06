@@ -7,12 +7,13 @@ import java.util.List;
 
 @Data
 public class CotizacionDTO {
+
     private Long id;
     private LocalDate fechaCreacion;
     private LocalDate fechaActualizacion;
-    private Long clienteId;
-    private List<ProductoCotizadoDTO> productos;
-    private double subtotal;
-    private double descuento;
-    private double total;
+    private ClienteDTO cliente;
+    private List<ProductoCotizacionDTO> productos;
+    private Double descuentoAdicional;
+    private Double subtotal;
+    private Double total;
 }

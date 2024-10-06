@@ -2,56 +2,49 @@ package com.adminsures.sures.entitys;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.w3c.dom.stylesheets.LinkStyle;
-
+import lombok.NoArgsConstructor;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Entity
 @Table(name = "cotizaciones")
+@Data
+@NoArgsConstructor
 public class Cotizacion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(updatable = false)
-    private LocalDate fechaCreacion;
+    @Column(name = "fecha_creacion", nullable = false)
+    private LocalDate fechaCreacion = LocalDate.now();
+
+    @Column(name = "fecha_actualizacion")
     private LocalDate fechaActualizacion;
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "cotizacion_id")
-    private List<ProductoCotizado> productos = new ArrayList<>();
-    private double subtotal;
-    private double descuento;
-    private double total;
+    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL)
+    private List<CotizacionProducto> productos;
 
-    public Cotizacion() {
-        this.fechaCreacion = LocalDate.now();
+    @Column(name = "descuento_adicional")
+    private Double descuentoAdicional;
+
+    @Column(name = "subtotal")
+    private Double subtotal;
+
+    @Column(name = "total")
+    private Double total;
+
+    @PrePersist
+    public void prePersist() {
+        fechaCreacion = LocalDate.now();
     }
 
-    public void actualizarCotizacion() {
-        this.fechaActualizacion = LocalDate.now();
-    }
-
-    // Métodos para agregar productos, calcular subtotal, IVA, importe y total
-    public void agregarProducto(Producto producto, int cantidad) {
-        ProductoCotizado productoCotizado = new ProductoCotizado(producto, cantidad);
-        productos.add(productoCotizado);
-        recalcularTotales();
-    }
-
-    public void recalcularTotales() {
-        subtotal = productos.stream()
-                .mapToDouble(ProductoCotizado::calcularImporte)
-                .sum();
-        double descuentoAplicado = subtotal * (descuento / 100);
-        total = subtotal - descuentoAplicado;
+    @PreUpdate
+    public void preUpdate() {
+        fechaActualizacion = LocalDate.now();
     }
 }
