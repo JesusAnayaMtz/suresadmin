@@ -26,7 +26,7 @@ public class Cotizacion {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
-    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "cotizacion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CotizacionProducto> productos;
 
     @Column(name = "descuento_adicional")

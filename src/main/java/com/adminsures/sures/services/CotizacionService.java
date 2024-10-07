@@ -1,6 +1,8 @@
 package com.adminsures.sures.services;
 
 import com.adminsures.sures.dto.CotizacionDTO;
+import com.adminsures.sures.dto.ProductoCotizacionDTO;
+import com.adminsures.sures.dto.ProductoDTO;
 import com.adminsures.sures.entitys.Cliente;
 import com.adminsures.sures.entitys.Cotizacion;
 import com.adminsures.sures.entitys.CotizacionProducto;
@@ -86,15 +88,40 @@ public class CotizacionService {
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         cotizacionExistente.setCliente(cliente);
 
-        // Actualizar productos
-        List<CotizacionProducto> productos = cotizacionMapper.mapProductosToEntity(cotizacionDTO.getProductos(), cotizacionExistente);
-        for (CotizacionProducto cotizacionProducto : productos) {
-            Producto producto = productoRepository.findById(cotizacionProducto.getProducto().getId())
-                    .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-            cotizacionProducto.setProducto(producto);
+        // Obtener IDs de productos desde el DTO
+        List<Long> productoIdsDesdeDTO = cotizacionDTO.getProductos().stream()
+                .map(ProductoCotizacionDTO::getProductoId)
+                .collect(Collectors.toList());
+
+        // Eliminar productos que ya no están en el DTO
+        cotizacionExistente.getProductos().removeIf(cotizacionProducto ->
+                !productoIdsDesdeDTO.contains(cotizacionProducto.getProducto().getId()));
+
+        // Agregar o actualizar productos desde el DTO
+        for (ProductoCotizacionDTO productoDTO : cotizacionDTO.getProductos()) {
+            CotizacionProducto cotizacionProductoExistente = cotizacionExistente.getProductos().stream()
+                    .filter(cp -> cp.getProducto().getId().equals(productoDTO.getProductoId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (cotizacionProductoExistente != null) {
+                // Si el producto ya existe, solo aumenta la cantidad
+                cotizacionProductoExistente.setCantidad(cotizacionProductoExistente.getCantidad() + productoDTO.getCantidad());
+                // Opcionalmente, si deseas actualizar el descuento también, puedes hacerlo aquí:
+                cotizacionProductoExistente.setDescuento(productoDTO.getDescuento());
+            } else {
+                // Si no existe, crea un nuevo CotizacionProducto
+                CotizacionProducto nuevoCotizacionProducto = new CotizacionProducto();
+                Producto producto = productoRepository.findById(productoDTO.getProductoId())
+                        .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+                nuevoCotizacionProducto.setProducto(producto);
+                nuevoCotizacionProducto.setCantidad(productoDTO.getCantidad());
+                nuevoCotizacionProducto.setDescuento(productoDTO.getDescuento());
+                // Asocia el nuevo producto a la cotización
+                nuevoCotizacionProducto.setCotizacion(cotizacionExistente);
+                cotizacionExistente.getProductos().add(nuevoCotizacionProducto);
+            }
         }
-        cotizacionExistente.getProductos().clear();
-        cotizacionExistente.getProductos().addAll(productos);
 
         // Actualizar descuentos, subtotal y total
         cotizacionExistente.setDescuentoAdicional(cotizacionDTO.getDescuentoAdicional());
@@ -103,10 +130,11 @@ public class CotizacionService {
         cotizacionExistente.setFechaActualizacion(LocalDate.now());
 
         // Guardar cambios
-        cotizacionExistente = cotizacionRepository.save(cotizacionExistente);
+        cotizacionRepository.save(cotizacionExistente);
 
         return cotizacionMapper.toDto(cotizacionExistente);
     }
+
 
     @Transactional
     public void eliminarCotizacion(Long id) {
