@@ -105,19 +105,18 @@ public class CotizacionService {
                     .orElse(null);
 
             if (cotizacionProductoExistente != null) {
-                // Si el producto ya existe, solo aumenta la cantidad
-                cotizacionProductoExistente.setCantidad(cotizacionProductoExistente.getCantidad() + productoDTO.getCantidad());
-                // Opcionalmente, si deseas actualizar el descuento también, puedes hacerlo aquí:
+                // Actualizar cantidad en lugar de sumarla
+                cotizacionProductoExistente.setCantidad(productoDTO.getCantidad());
+                // Actualizar el descuento si es necesario
                 cotizacionProductoExistente.setDescuento(productoDTO.getDescuento());
             } else {
-                // Si no existe, crea un nuevo CotizacionProducto
+                // Crear un nuevo producto si no existe
                 CotizacionProducto nuevoCotizacionProducto = new CotizacionProducto();
                 Producto producto = productoRepository.findById(productoDTO.getProductoId())
                         .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
                 nuevoCotizacionProducto.setProducto(producto);
                 nuevoCotizacionProducto.setCantidad(productoDTO.getCantidad());
                 nuevoCotizacionProducto.setDescuento(productoDTO.getDescuento());
-                // Asocia el nuevo producto a la cotización
                 nuevoCotizacionProducto.setCotizacion(cotizacionExistente);
                 cotizacionExistente.getProductos().add(nuevoCotizacionProducto);
             }
