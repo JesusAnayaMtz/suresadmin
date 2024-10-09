@@ -5,6 +5,7 @@ import com.adminsures.sures.dto.ProductoCotizacionDTO;
 import com.adminsures.sures.entitys.Cotizacion;
 import com.adminsures.sures.entitys.CotizacionProducto;
 import com.adminsures.sures.entitys.Producto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", uses = {ClienteMapper.class, ProductoMapper.class})
 public interface CotizacionMapper {
+
 
     CotizacionMapper INSTANCE = Mappers.getMapper(CotizacionMapper.class);
 
