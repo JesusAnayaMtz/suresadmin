@@ -61,9 +61,12 @@ public class EmpleadoDTO {
 
     private String banco;
 
+    @Size(min = 1, max = 18, message = "Se requiere minimo un numero maximo 18")
     private Long cuentaBancaria;
 
+
     private Double salarioBase;
+
     private Double salarioIntegrado;
 
     private String rutaImagen;
