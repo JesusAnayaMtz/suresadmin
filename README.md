@@ -102,5 +102,5 @@ Aquí algunos de los endpoints disponibles:
 Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](./LICENSE) para más detalles.
 
 <p align="center">
-  Con ❤️ por <a href="https://github.com/JesusAnayaMtz">Jesus Anaya</a>
+  Creado por <a href="https://github.com/JesusAnayaMtz">Jesus Anaya</a>
 </p>
