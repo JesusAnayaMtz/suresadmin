@@ -1,9 +1,7 @@
 package com.adminsures.sures.services;
 
 import com.adminsures.sures.dto.EmpleadoDTO;
-import com.adminsures.sures.dto.ProductoDTO;
 import com.adminsures.sures.entitys.Empleado;
-import com.adminsures.sures.entitys.Producto;
 import com.adminsures.sures.mapper.EmpleadoMapper;
 import com.adminsures.sures.repository.EmpleadoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +34,7 @@ public class EmpleadoService {
         return empleados.stream().map(empleadoMapper::toDTO).toList();
     }
 
-    //Metodo para obtener los clientes;
+    //Metodo para obtener los empleados;
     public List<EmpleadoDTO> obtenerEmpleadosActivos(){
         List<Empleado> empleados = empleadoRepository.findByActivoTrue();
         return empleados.stream()
@@ -75,7 +72,7 @@ public class EmpleadoService {
         return empleadoMapper.toDTO(empleado);
     }
 
-    public EmpleadoDTO actualizarProducto(Long id, EmpleadoDTO empleadoDTO) throws Exception {
+    public EmpleadoDTO actualizarEmpleado(Long id, EmpleadoDTO empleadoDTO) throws Exception {
         Empleado empleadoExistente = empleadoRepository.findById(id).orElseThrow(() -> new Exception("Empleado no encontrado"));
 
         validarEmpleadoActualizado(empleadoDTO, empleadoExistente);

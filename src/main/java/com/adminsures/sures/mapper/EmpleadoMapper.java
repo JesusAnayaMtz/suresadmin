@@ -38,7 +38,7 @@ public class EmpleadoMapper {
     public Empleado toEntity(EmpleadoDTO empleadoDTO){
         Empleado empleado = new Empleado();
         empleado.setId(empleadoDTO.getId());
-        empleado.setNumeroEmpleado(empleado.getNumeroEmpleado());
+        empleado.setNumeroEmpleado(empleadoDTO.getNumeroEmpleado());
         empleado.setNombre(empleadoDTO.getNombre());
         empleado.setApellido(empleadoDTO.getApellido());
         empleado.setApellidoMaterno(empleadoDTO.getApellidoMaterno());
@@ -55,6 +55,7 @@ public class EmpleadoMapper {
         empleado.setNss(empleadoDTO.getNss());
         empleado.setDepartamento(empleadoDTO.getDepartamento());
         empleado.setPuesto(empleadoDTO.getPuesto());
+        empleado.setBanco(empleadoDTO.getBanco());
         empleado.setCuentaBancaria(empleadoDTO.getCuentaBancaria());
         empleado.setSalarioBase(empleadoDTO.getSalarioBase());
         empleado.setSalarioIntegrado(empleadoDTO.getSalarioIntegrado());
