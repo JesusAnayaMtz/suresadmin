@@ -37,8 +37,6 @@ public class Producto {
     private TipoIva tipoIva;
 
     private Double precio;
-    private Double costo;
-    private Double utilidad;
 
     @Enumerated(EnumType.STRING)
     private Categoria categoria;

@@ -33,6 +33,7 @@ public interface CotizacionMapper {
                     ProductoCotizacionDTO dto = new ProductoCotizacionDTO();
                     dto.setProductoId(producto.getProducto().getId());
                     dto.setNombre(producto.getProducto().getDescripcion());
+                    dto.setUnidadVenta(producto.getProducto().getUnidadVenta());
                     dto.setCantidad(producto.getCantidad());
                     dto.setPrecio(producto.getProducto().getPrecio());
                     dto.setDescuento(producto.getDescuento());

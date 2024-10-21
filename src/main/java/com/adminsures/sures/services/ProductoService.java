@@ -57,8 +57,6 @@ public class ProductoService {
 
         Producto producto = productoMapper.toEntity(productoDTO);
 
-        // Calcular Utilidad
-        producto.setUtilidad(calcularUtilidad(producto.getCosto(), producto.getPrecio()));
 
         // Guardar producto sin imagen
         producto = productoRepository.save(producto);
@@ -98,15 +96,12 @@ public class ProductoService {
         productoExistente.setDescripcion(productoDTO.getDescripcion());
         productoExistente.setClaveSat(productoDTO.getClaveSat());
         productoExistente.setPrecio(productoDTO.getPrecio());
-        productoExistente.setCosto(productoDTO.getCosto());
         productoExistente.setUnidadVenta(productoDTO.getUnidadVenta());
         productoExistente.setCategoria(productoDTO.getCategoria());
         productoExistente.setExistencia(productoDTO.getExistencia());
         productoExistente.setExistenciaMinima(productoDTO.getExistenciaMinima());
         productoExistente.setFechaActualizacion(LocalDate.now());
 
-        //Recalcular la en caso de que cambie el precio o el costo
-        productoExistente.setUtilidad(calcularUtilidad(productoExistente.getCosto(), productoExistente.getPrecio()));
 
         productoExistente = productoRepository.save(productoExistente);
         return productoMapper.toDTO(productoExistente);

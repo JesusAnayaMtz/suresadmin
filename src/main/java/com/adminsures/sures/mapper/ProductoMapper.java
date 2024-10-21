@@ -16,8 +16,6 @@ public class ProductoMapper {
         dto.setClaveSat(producto.getClaveSat());
         dto.setTipoIva(producto.getTipoIva());
         dto.setPrecio(producto.getPrecio());
-        dto.setCosto(producto.getCosto());
-        dto.setUtilidad(producto.getUtilidad());
         dto.setCategoria(producto.getCategoria());
         dto.setUnidadVenta(producto.getUnidadVenta());
         dto.setExistencia(producto.getExistencia());  // Mapeo del campo existencia
@@ -36,7 +34,6 @@ public class ProductoMapper {
         producto.setClaveSat(dto.getClaveSat());
         producto.setTipoIva(dto.getTipoIva());
         producto.setPrecio(dto.getPrecio());
-        producto.setCosto(dto.getCosto());
         producto.setUnidadVenta(dto.getUnidadVenta());
         producto.setCategoria(dto.getCategoria());
         producto.setRutaImagen(dto.getRutaImagen());

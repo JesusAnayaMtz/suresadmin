@@ -36,13 +36,6 @@ public class ProductoDTO {
     @Min(1)
     private Double precio;
 
-    @NotNull
-    @Min(1)
-    private Double costo;  // Campo para costo
-
-    private Double utilidad;  // Campo para utilidad calculada automáticamente
-
-
     private UnidadVenta unidadVenta;  // Campo para la unidad de venta
 
 
