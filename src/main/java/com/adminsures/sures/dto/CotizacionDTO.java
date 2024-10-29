@@ -15,5 +15,7 @@ public class CotizacionDTO {
     private List<ProductoCotizacionDTO> productos;
     private Double descuentoAdicional;
     private Double subtotal;
+    private Double subtotalDescuento;
+    private Double iva;
     private Double total;
 }

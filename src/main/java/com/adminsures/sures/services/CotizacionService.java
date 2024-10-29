@@ -67,9 +67,11 @@ public class CotizacionService {
         }
         cotizacion.setProductos(productos);
 
-        // Cálculo del subtotal y total
+        // Cálculo del subtotal y subtotalConDescuento
         cotizacion.setDescuentoAdicional(cotizacionDTO.getDescuentoAdicional());
         cotizacion.setSubtotal(cotizacionMapper.calcularSubtotal(cotizacion));
+        cotizacion.setSubtotalDescuento(cotizacionMapper.calcularSubtotalDescuento(cotizacion));
+        cotizacion.setIva(cotizacionMapper.calcularIva(cotizacion));
         cotizacion.setTotal(cotizacionMapper.calcularTotal(cotizacion));
 
         // Guardar la cotización
@@ -125,7 +127,7 @@ public class CotizacionService {
         // Actualizar descuentos, subtotal y total
         cotizacionExistente.setDescuentoAdicional(cotizacionDTO.getDescuentoAdicional());
         cotizacionExistente.setSubtotal(cotizacionMapper.calcularSubtotal(cotizacionExistente));
-        cotizacionExistente.setTotal(cotizacionMapper.calcularTotal(cotizacionExistente));
+        cotizacionExistente.setSubtotalDescuento(cotizacionMapper.calcularSubtotalDescuento(cotizacionExistente));
         cotizacionExistente.setFechaActualizacion(LocalDate.now());
 
         // Guardar cambios

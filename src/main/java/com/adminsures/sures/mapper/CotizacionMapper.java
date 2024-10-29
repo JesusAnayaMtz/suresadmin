@@ -19,7 +19,7 @@ public interface CotizacionMapper {
     CotizacionMapper INSTANCE = Mappers.getMapper(CotizacionMapper.class);
 
     @Mapping(target = "subtotal", expression = "java(calcularSubtotal(cotizacion))")
-    @Mapping(target = "total", expression = "java(calcularTotal(cotizacion))")
+    @Mapping(target = "subtotalDescuento", expression = "java(calcularSubtotalDescuento(cotizacion))")
     @Mapping(target = "productos", source = "productos")
     CotizacionDTO toDto(Cotizacion cotizacion);
 
@@ -65,8 +65,18 @@ public interface CotizacionMapper {
                 .sum();
     }
 
-    default Double calcularTotal(Cotizacion cotizacion) {
+    default Double calcularSubtotalDescuento(Cotizacion cotizacion) {
         Double subtotal = calcularSubtotal(cotizacion);
         return subtotal - (subtotal * (cotizacion.getDescuentoAdicional() / 100));
+    }
+
+    default Double calcularIva(Cotizacion cotizacion) {
+        Double iva = calcularSubtotalDescuento(cotizacion);
+        return iva * 0.16;
+    }
+
+    default Double calcularTotal(Cotizacion cotizacion){
+        Double total = calcularSubtotalDescuento(cotizacion);
+        return total + calcularIva(cotizacion);
     }
 }

@@ -35,6 +35,12 @@ public class Cotizacion {
     @Column(name = "subtotal")
     private Double subtotal;
 
+    @Column(name = "subtotal_descuento")
+    private Double subtotalDescuento;
+
+    @Column(name = "iva")
+    private Double iva;
+
     @Column(name = "total")
     private Double total;
 
@@ -47,4 +53,7 @@ public class Cotizacion {
     public void preUpdate() {
         fechaActualizacion = LocalDate.now();
     }
+
+
+
 }

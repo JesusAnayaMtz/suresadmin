@@ -39,7 +39,7 @@ public class CotizacionProducto {
         Double descuentoAplicado = precio * (descuento / 100);
         Double precioConDescuento = precio - descuentoAplicado;
         iva = precioConDescuento * 0.16; // IVA del 16%
-        importe = (precioConDescuento + iva) * cantidad;
+        importe = (precioConDescuento) * cantidad;
         return importe;
     }
 }
